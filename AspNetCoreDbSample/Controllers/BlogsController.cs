@@ -20,6 +20,7 @@ namespace AspNetCoreDbSample.Controllers
         }
 
         // GET: Blogs
+        [Route("Blogs")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Blogs.ToListAsync());
@@ -27,7 +28,7 @@ namespace AspNetCoreDbSample.Controllers
 
         // GET: Blogs
         [Route("Blogs/Posts")]
-        public async Task<IActionResult> Index([FromQuery]int blogId)
+        public async Task<IActionResult> Posts([FromQuery]int blogId)
         {
             var blog = await _context.Blogs
                 .Include(p => p.Posts)
