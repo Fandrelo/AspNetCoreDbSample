@@ -25,18 +25,20 @@ namespace AspNetCoreDbSample.Controllers
             return View(await _context.Blogs.ToListAsync());
         }
 
-        // GET: Blogs/blogName
-        [Route("Blogs/{blogName}")]
-        public async Task<IActionResult> Index(string blogName)
+        // GET: Blogs
+        [Route("Blogs/Posts")]
+        public async Task<IActionResult> Index([FromQuery]int blogId)
         {
-            ViewData["Title"] = $"Blog {blogName}";
-            return View("Posts",
-                await _context.Posts
-                .Include(p => p.Blog)
-                .Where(p => p.Blog.Name == blogName)
-                .OrderByDescending(p => p.Date)
-                .ToListAsync()
-            );
+            var blog = await _context.Blogs
+                .Include(p => p.Posts)
+                .Where(p => p.BlogId == blogId)
+                .FirstOrDefaultAsync();
+            if(blog == null)
+            {
+                return NotFound();
+            }
+            ViewData["Title"] = $"Blog {blog.Name}";
+            return View("Posts", blog.Posts.OrderByDescending(p => p.Date));
         }
 
         // GET: Blogs/Details/5
